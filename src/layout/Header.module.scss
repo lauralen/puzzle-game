@@ -1,0 +1,12 @@
+@import '~styles/variables';
+@import '~styles/mixins';
+
+.header {
+  width: 100%;
+  height: $header-height;
+  display: flex;
+  align-items: center;
+  padding: $spacing-sm $spacing-md;
+  background-color: $color-black;
+  overflow: hidden;
+}

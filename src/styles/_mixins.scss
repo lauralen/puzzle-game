@@ -1,1 +1,26 @@
 @import '~styles/variables';
+
+@mixin input {
+  display: block;
+  height: 35px;
+  margin: 0 $spacing-sm;
+  padding: 0 $spacing-xs;
+  border: 1px solid black;
+  border-radius: $border-radius;
+
+  &:focus {
+    box-shadow: 0 0 2px 2px $color-main;
+    border-color: $color-main;
+    outline: none;
+  }
+
+  & + label {
+    margin-left: $spacing-sm;
+  }
+}
+
+@mixin inputLabel {
+  display: inline-block;
+  float: left;
+  color: $color-white;
+}

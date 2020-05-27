@@ -3,6 +3,7 @@ import axios from "axios";
 import unsplashId from "utils/unsplashId";
 
 import Header from "./layout/Header";
+import GameBoard from "./layout/GameBoard";
 
 export default function App() {
   const [image, setImage] = useState(null);
@@ -43,6 +44,15 @@ export default function App() {
   return (
     <>
       <Header fetchImage={fetchImage} />
+      {image && (
+        <GameBoard
+          image={image}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+          error={error}
+          puzzleSize={puzzleSize}
+        />
+      )}
     </>
   );
 }

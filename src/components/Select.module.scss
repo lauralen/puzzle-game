@@ -1,0 +1,9 @@
+@import '~styles/mixins';
+
+label {
+  @include inputLabel;
+}
+
+select {
+  @include input;
+}

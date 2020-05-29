@@ -18,7 +18,6 @@ const GameBoard = ({ image, isLoading, setIsLoading, error, puzzleSize }) => {
 
   const getPieces = () => {
     const piecesCount = rows * columns;
-    console.log(piecesCount);
     let pieces = [...Array(piecesCount)];
 
     return pieces.map((piece, index) => {
@@ -36,8 +35,6 @@ const GameBoard = ({ image, isLoading, setIsLoading, error, puzzleSize }) => {
 
     let left = column * -pieceSize;
     let top = row * -pieceSize;
-
-    console.log(`${left}px ${top}px`);
 
     return `${left}px ${top}px`;
   };

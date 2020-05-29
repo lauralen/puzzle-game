@@ -1,14 +1,11 @@
-import React, { useState, useEffect } from "react";
-import style from "./GameBoard.module.scss";
+import React, { useState, useEffect } from 'react';
+import style from './GameBoard.module.scss';
 
 const GameBoard = ({ image, isLoading, setIsLoading, error, puzzleSize }) => {
   const [pieces, setPieces] = useState([]);
   const [shuffled, setShuffled] = useState([]);
 
-  const { height, width, pieceSize } = puzzleSize;
-
-  const rowCount = height / pieceSize;
-  const columnCount = width / pieceSize;
+  const { rows, columns, pieceSize } = puzzleSize;
   const imageUrl = image.urls.custom;
 
   useEffect(() => {
@@ -20,7 +17,8 @@ const GameBoard = ({ image, isLoading, setIsLoading, error, puzzleSize }) => {
   }, [image]);
 
   const getPieces = () => {
-    const piecesCount = rowCount * columnCount;
+    const piecesCount = rows * columns;
+    console.log(piecesCount);
     let pieces = [...Array(piecesCount)];
 
     return pieces.map((piece, index) => {
@@ -39,15 +37,17 @@ const GameBoard = ({ image, isLoading, setIsLoading, error, puzzleSize }) => {
     let left = column * -pieceSize;
     let top = row * -pieceSize;
 
+    console.log(`${left}px ${top}px`);
+
     return `${left}px ${top}px`;
   };
 
   const getColumn = index => {
-    return index < columnCount ? index : getColumn(index - columnCount);
+    return index < columns ? index : getColumn(index - columns);
   };
 
   const getRow = (index, column) => {
-    return (index - column) / columnCount;
+    return (index - column) / columns;
   };
 
   const getShuffledPieces = pieces => {
@@ -62,7 +62,7 @@ const GameBoard = ({ image, isLoading, setIsLoading, error, puzzleSize }) => {
   };
 
   const onDragStart = (event, piece) => {
-    event.dataTransfer.setData("piece", piece);
+    event.dataTransfer.setData('piece', piece);
   };
 
   const onDragOver = event => {
@@ -70,7 +70,7 @@ const GameBoard = ({ image, isLoading, setIsLoading, error, puzzleSize }) => {
   };
 
   const onDrop = (event, target) => {
-    let piece = Number(event.dataTransfer.getData("piece"));
+    let piece = Number(event.dataTransfer.getData('piece'));
 
     if (piece === target) {
       let updatedPieces = pieces.map((piece, index) => {
@@ -95,8 +95,8 @@ const GameBoard = ({ image, isLoading, setIsLoading, error, puzzleSize }) => {
           <div
             className={style.puzzle}
             style={{
-              width: `${width}px`,
-              height: `${height}px`,
+              width: `${columns * 100}px`,
+              height: `${rows * 100}px`,
               backgroundImage: `url(${imageUrl})`
             }}
           >

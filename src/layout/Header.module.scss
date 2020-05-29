@@ -1,7 +1,7 @@
 @import '~styles/variables';
 @import '~styles/mixins';
 
-.header {
+header {
   width: 100%;
   height: $header-height;
   display: flex;
@@ -9,4 +9,8 @@
   padding: $spacing-sm $spacing-md;
   background-color: $color-black;
   overflow: hidden;
+
+  button {
+    margin-left: auto;
+  }
 }

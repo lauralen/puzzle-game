@@ -1,0 +1,12 @@
+@import '~styles/variables';
+@import '~styles/mixins';
+
+.gallery {
+  min-height: calc(100vh - #{$header-height});
+  padding-top: $spacing-md;
+  background-color: $color-darkgrey;
+
+  img {
+    max-height: 300px;
+  }
+}

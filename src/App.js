@@ -8,6 +8,7 @@ import GameBoard from './layout/GameBoard';
 
 export default function App() {
   const [images, setImages] = useState(null);
+  const [keyword, setKeyword] = useState('');
   const [randomImage, setRandomImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
@@ -24,8 +25,8 @@ export default function App() {
 
   useEffect(() => {
     setError();
-    fetchImages();
-  }, [puzzleSize]);
+    keyword === '' ? fetchImages() : fetchImagesByKeyword(keyword);
+  }, [keyword]);
 
   async function fetchImages() {
     try {
@@ -40,6 +41,25 @@ export default function App() {
 
       setImages(res.data);
       console.log(res.data);
+      setIsLoading(false);
+    } catch (err) {
+      setError('Oops! Something went wrong');
+      setIsLoading(false);
+    }
+  }
+
+  async function fetchImagesByKeyword() {
+    try {
+      setIsLoading(true);
+
+      const res = await axios.get(`${unsplashUrl}search/photos`, {
+        params: { query: keyword, per_page: 5 },
+        headers: {
+          Authorization: `Client-ID ${unsplashId}`
+        }
+      });
+
+      setImages(res.data.results);
       setIsLoading(false);
     } catch (err) {
       setError('Oops! Something went wrong');
@@ -75,6 +95,8 @@ export default function App() {
         fetchRandomImage={fetchRandomImage}
         puzzleSize={puzzleSize}
         setPuzzleSize={setPuzzleSize}
+        keyword={keyword}
+        setKeyword={setKeyword}
         fetchImages={fetchImages}
       />
       <Gallery

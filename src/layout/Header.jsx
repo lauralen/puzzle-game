@@ -3,13 +3,24 @@ import style from './Header.module.scss';
 
 import Button from 'components/Button';
 import Select from 'components/Select';
+import Input from 'components/Input';
 
-const Header = ({ fetchImage, puzzleSize, setPuzzleSize }) => {
+const Header = ({
+  fetchRandomImage,
+  puzzleSize,
+  setPuzzleSize,
+  keyword,
+  setKeyword
+}) => {
   const { rows, columns } = puzzleSize;
 
   const handleChange = event => {
     const { name, value } = event.target;
     setPuzzleSize({ ...puzzleSize, [name]: Number(value) });
+  };
+
+  const handleKeywordChange = event => {
+    setKeyword(event.target.value);
   };
 
   return (
@@ -35,7 +46,16 @@ const Header = ({ fetchImage, puzzleSize, setPuzzleSize }) => {
         <option value='8'>8</option>
       </Select>
 
-      <Button type='primary' title='Get random image' action={fetchImage} />
+      <Input
+        placeholder='Search images'
+        value={keyword}
+        onChange={handleKeywordChange}
+      />
+      <Button
+        type='primary'
+        title='Get random image'
+        action={fetchRandomImage}
+      />
     </header>
   );
 };

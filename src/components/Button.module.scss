@@ -17,6 +17,11 @@ button {
     -moz-box-shadow: 0px 0px 50px -13px rgba(0, 0, 0, 0.75);
     box-shadow: 0px 0px 50px -13px rgba(0, 0, 0, 0.75);
   }
+
+  &:disabled {
+    background-color: $color-darkgrey;
+    cursor: not-allowed;
+  }
 }
 
 .primary {

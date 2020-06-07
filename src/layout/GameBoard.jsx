@@ -1,20 +1,55 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import unsplashId from 'utils/unsplashId';
 import style from './GameBoard.module.scss';
 
-const GameBoard = ({ image, isLoading, setIsLoading, error, puzzleSize }) => {
+const GameBoard = ({ selectedImage, puzzleSize }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [imageUrl, setImageUrl] = useState(null);
   const [pieces, setPieces] = useState([]);
   const [shuffled, setShuffled] = useState([]);
 
   const { rows, columns, pieceSize } = puzzleSize;
-  const imageUrl = image.urls.custom;
+  const unsplashUrl = 'https://api.unsplash.com/';
+  const height = puzzleSize.rows * 100;
+  const width = puzzleSize.columns * 100;
 
   useEffect(() => {
+    setIsLoading(true);
+
+    selectedImage
+      ? setImageUrl(
+          selectedImage.urls.raw + `&h=${height}&w=${width}&fit=clamp`
+        )
+      : fetchRandomImage();
+
     let pieces = getPieces();
 
     setPieces(pieces);
     setShuffled(getShuffledPieces(pieces));
     setIsLoading(false);
-  }, [image]);
+  }, []);
+
+  async function fetchRandomImage() {
+    try {
+      const res = await axios.get(`${unsplashUrl}photos/random`, {
+        params: {
+          h: height,
+          w: width,
+          fit: 'clamp'
+        },
+        headers: {
+          Authorization: `Client-ID ${unsplashId}`
+        }
+      });
+
+      setImageUrl(res.data.urls.custom);
+    } catch (err) {
+      setError('Oops! Something went wrong');
+      setIsLoading(false);
+    }
+  }
 
   const getPieces = () => {
     const piecesCount = rows * columns;
@@ -70,7 +105,7 @@ const GameBoard = ({ image, isLoading, setIsLoading, error, puzzleSize }) => {
     let piece = Number(event.dataTransfer.getData('piece'));
 
     if (piece === target) {
-      let updatedPieces = pieces.map((piece, index) => {
+      let updatedPieces = pieces.map(piece => {
         if (piece.position === target) {
           return { ...piece, solved: true };
         } else return piece;
@@ -83,7 +118,7 @@ const GameBoard = ({ image, isLoading, setIsLoading, error, puzzleSize }) => {
 
   return (
     <div className={style.gameBoard}>
-      {isLoading ? (
+      {isLoading || !imageUrl ? (
         <p>loading...</p>
       ) : error ? (
         <p>{error}</p>

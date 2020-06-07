@@ -4,13 +4,17 @@ import style from './Header.module.scss';
 import Button from 'components/Button';
 import Select from 'components/Select';
 import Input from 'components/Input';
+import Checkbox from 'components/Checkbox';
 
 const Header = ({
-  fetchRandomImage,
   puzzleSize,
   setPuzzleSize,
   keyword,
-  setKeyword
+  setKeyword,
+  useRandomImage,
+  setUseRandomImage,
+  setStartGame,
+  selectedImage
 }) => {
   const { rows, columns } = puzzleSize;
 
@@ -23,8 +27,17 @@ const Header = ({
     setKeyword(event.target.value);
   };
 
+  const handleCheck = event => {
+    setUseRandomImage(event.target.checked);
+  };
+
   return (
     <header className={style.header}>
+      <Input
+        placeholder='Search images'
+        value={keyword}
+        onChange={handleKeywordChange}
+      />
       <Select
         label='Puzzle row count:'
         value={rows}
@@ -46,15 +59,18 @@ const Header = ({
         <option value='8'>8</option>
       </Select>
 
-      <Input
-        placeholder='Search images'
-        value={keyword}
-        onChange={handleKeywordChange}
+      <Checkbox
+        name='useRandomImage'
+        type='checkbox'
+        checked={useRandomImage}
+        label='Use random image'
+        onChange={handleCheck}
       />
       <Button
         type='primary'
-        title='Get random image'
-        action={fetchRandomImage}
+        title='Start game'
+        action={setStartGame}
+        disabled={!selectedImage && !useRandomImage}
       />
     </header>
   );

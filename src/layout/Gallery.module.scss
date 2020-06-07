@@ -3,10 +3,54 @@
 
 .gallery {
   min-height: calc(100vh - #{$header-height});
-  padding-top: $spacing-md;
+  padding: $spacing-md;
+  margin: auto;
   background-color: $color-darkgrey;
 
-  img {
-    max-height: 300px;
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 300px);
+    grid-gap: $spacing-md;
+
+    .img {
+      position: relative;
+      height: 300px;
+      background-size: cover;
+      background-position: 50% 50%;
+      background-repeat: no-repeat;
+
+      * {
+        visibility: hidden;
+      }
+
+      &:hover {
+        cursor: pointer;
+
+        .credits,
+        .credits * {
+          visibility: visible;
+        }
+
+        .credits {
+          position: absolute;
+          visibility: visible;
+          width: 100%;
+          bottom: 0;
+          padding: $spacing-xs;
+          text-align: center;
+          background-color: $color-white;
+
+          a {
+            display: inline-block;
+            text-decoration: underline;
+            color: $color-black;
+          }
+        }
+      }
+    }
+
+    .selected {
+      border: 5px solid $color-main;
+    }
   }
 }

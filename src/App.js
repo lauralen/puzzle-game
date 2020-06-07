@@ -9,7 +9,9 @@ import GameBoard from './layout/GameBoard';
 export default function App() {
   const [images, setImages] = useState(null);
   const [keyword, setKeyword] = useState('');
-  const [randomImage, setRandomImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [useRandomImage, setUseRandomImage] = useState(null);
+  const [startGame, setStartGame] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
   const [puzzleSize, setPuzzleSize] = useState({
@@ -40,7 +42,6 @@ export default function App() {
       });
 
       setImages(res.data);
-      console.log(res.data);
       setIsLoading(false);
     } catch (err) {
       setError('Oops! Something went wrong');
@@ -67,52 +68,32 @@ export default function App() {
     }
   }
 
-  async function fetchRandomImage() {
-    try {
-      setIsLoading(true);
-
-      const res = await axios.get(`${unsplashUrl}photos/random`, {
-        params: {
-          h: puzzleSize.rows * 100,
-          w: puzzleSize.columns * 100,
-          fit: 'clamp'
-        },
-        headers: {
-          Authorization: `Client-ID ${unsplashId}`
-        }
-      });
-
-      setRandomImage(res.data);
-    } catch (err) {
-      setError('Oops! Something went wrong');
-      setIsLoading(false);
-    }
-  }
-
   return (
     <>
-      <Header
-        fetchRandomImage={fetchRandomImage}
-        puzzleSize={puzzleSize}
-        setPuzzleSize={setPuzzleSize}
-        keyword={keyword}
-        setKeyword={setKeyword}
-        fetchImages={fetchImages}
-      />
-      <Gallery
-        images={images}
-        isLoading={isLoading}
-        setIsLoading={setIsLoading}
-        error={error}
-      />
-      {randomImage && (
-        <GameBoard
-          image={randomImage}
-          isLoading={isLoading}
-          setIsLoading={setIsLoading}
-          error={error}
-          puzzleSize={puzzleSize}
-        />
+      {startGame ? (
+        <GameBoard selectedImage={selectedImage} puzzleSize={puzzleSize} />
+      ) : (
+        <>
+          <Header
+            puzzleSize={puzzleSize}
+            setPuzzleSize={setPuzzleSize}
+            keyword={keyword}
+            setKeyword={setKeyword}
+            fetchImages={fetchImages}
+            useRandomImage={useRandomImage}
+            setUseRandomImage={setUseRandomImage}
+            setStartGame={setStartGame}
+            selectedImage={selectedImage}
+          />
+          <Gallery
+            images={images}
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
+            error={error}
+            selectedImage={selectedImage}
+            setSelectedImage={setSelectedImage}
+          />
+        </>
       )}
     </>
   );

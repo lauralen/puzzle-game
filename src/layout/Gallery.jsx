@@ -1,7 +1,13 @@
 import React from 'react';
 import style from './Gallery.module.scss';
 
-const Gallery = ({ images, isLoading, error }) => {
+const Gallery = ({
+  images,
+  isLoading,
+  error,
+  selectedImage,
+  setSelectedImage
+}) => {
   return (
     <div className={style.gallery}>
       {isLoading ? (
@@ -9,18 +15,46 @@ const Gallery = ({ images, isLoading, error }) => {
       ) : error ? (
         <p>{error}</p>
       ) : (
-        <>
+        <div className={style.grid}>
           {images &&
             images.map((img, index) => {
               return (
-                <img
+                <div
                   key={index}
-                  src={img.urls.regular}
-                  alt={img.alt_description}
-                />
+                  className={`img ${img === selectedImage && 'selected'}`}
+                  className={[
+                    style.img,
+                    img === selectedImage ? style.selected : null
+                  ].join(' ')}
+                  style={{
+                    backgroundImage: `url(${img.urls.regular})`
+                  }}
+                  onClick={() => {
+                    setSelectedImage(images[index]);
+                  }}
+                >
+                  <div className={style.credits}>
+                    Photo by{' '}
+                    <a
+                      href={img.user.links.html}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                    >
+                      {img.user.name}
+                    </a>{' '}
+                    /{' '}
+                    <a
+                      href='https://unsplash.com/'
+                      target='_blank'
+                      rel='noopener noreferrer'
+                    >
+                      Unsplash
+                    </a>
+                  </div>
+                </div>
               );
             })}
-        </>
+        </div>
       )}
     </div>
   );

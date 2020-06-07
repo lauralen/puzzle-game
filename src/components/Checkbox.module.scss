@@ -1,0 +1,6 @@
+@import '~styles/mixins';
+
+label {
+  @include inputLabel;
+  float: right;
+}

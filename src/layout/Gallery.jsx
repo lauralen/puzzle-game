@@ -1,6 +1,6 @@
-import React from "react";
-import Loader from "components/Loader";
-import style from "./Gallery.module.scss";
+import React from 'react';
+import Loader from 'components/Loader';
+import style from './Gallery.module.scss';
 
 const Gallery = ({
   images,
@@ -22,32 +22,34 @@ const Gallery = ({
               return (
                 <div
                   key={index}
-                  className={`img ${img === selectedImage && "selected"}`}
+                  className={`img ${img === selectedImage && 'selected'}`}
                   className={[
                     style.img,
                     img === selectedImage ? style.selected : null
-                  ].join(" ")}
+                  ].join(' ')}
                   style={{
                     backgroundImage: `url(${img.urls.regular})`
                   }}
                   onClick={() => {
-                    setSelectedImage(images[index]);
+                    setSelectedImage(
+                      selectedImage === images[index] ? null : images[index]
+                    );
                   }}
                 >
                   <div className={style.credits}>
-                    Photo by{" "}
+                    Photo by{' '}
                     <a
                       href={img.user.links.html}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      target='_blank'
+                      rel='noopener noreferrer'
                     >
                       {img.user.name}
-                    </a>{" "}
-                    /{" "}
+                    </a>{' '}
+                    /{' '}
                     <a
-                      href="https://unsplash.com/"
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      href='https://unsplash.com/'
+                      target='_blank'
+                      rel='noopener noreferrer'
                     >
                       Unsplash
                     </a>

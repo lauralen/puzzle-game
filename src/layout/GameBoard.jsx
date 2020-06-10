@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import unsplashId from 'utils/unsplashId';
+import Loader from 'components/Loader';
 import style from './GameBoard.module.scss';
 
 const GameBoard = ({ selectedImage, puzzleSize }) => {
@@ -119,7 +120,7 @@ const GameBoard = ({ selectedImage, puzzleSize }) => {
   return (
     <div className={style.gameBoard}>
       {isLoading || !imageUrl ? (
-        <p>loading...</p>
+        <Loader />
       ) : error ? (
         <p>{error}</p>
       ) : (

@@ -1,6 +1,24 @@
 @import '~styles/mixins';
 
+input {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+
+  &:checked:after {
+    content: '\2714';
+    position: absolute;
+    top: -6px;
+    left: 4px;
+    color: $color-main;
+    font-size: $font-size-h1;
+  }
+
+  & + label {
+    margin-left: 0;
+  }
+}
+
 label {
   @include inputLabel;
-  float: right;
 }

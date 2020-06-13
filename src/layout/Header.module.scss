@@ -16,4 +16,8 @@ header {
   input:first-of-type {
     margin-right: auto;
   }
+
+  button {
+    margin-left: $spacing-md;
+  }
 }

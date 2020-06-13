@@ -7,6 +7,9 @@
   padding: 0 $spacing-sm;
   border: 1px solid $color-black;
   border-radius: $border-radius;
+  background-color: $color-white;
+  font-family: 'Open Sans', sans-serif;
+  font-size: $font-size-base;
 
   &:focus {
     box-shadow: 0 0 2px 2px $color-main;

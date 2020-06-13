@@ -4,6 +4,7 @@
 .gallery {
   min-height: calc(100vh - #{$header-height});
   padding: $spacing-md;
+  padding-top: $header-height + $spacing-md;
   margin: auto;
   background-color: $color-darkgrey;
 

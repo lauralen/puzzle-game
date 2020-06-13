@@ -2,6 +2,7 @@
 @import '~styles/mixins';
 
 header {
+  position: fixed;
   width: 100%;
   height: $header-height;
   display: flex;
@@ -9,6 +10,7 @@ header {
   padding: $spacing-sm $spacing-md;
   background-color: $color-black;
   overflow: hidden;
+  z-index: 2;
 
   button {
     margin-left: auto;

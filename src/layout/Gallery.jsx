@@ -115,18 +115,21 @@ const Gallery = ({ keyword, selectedImage, setSelectedImage }) => {
                 </div>
               );
             })}
-          {page <= 5 ? (
-            <Button
-              action={() => {
-                setPage(page + 1);
-              }}
-              title='Load more'
-              type='secondary'
-              disabled={isLoading.images}
-            />
-          ) : null}
         </div>
       )}
+
+      {!isLoading.page && page <= 5 ? (
+        <div className={style.buttonWrapper}>
+          <Button
+            action={() => {
+              setPage(page + 1);
+            }}
+            title='Load more'
+            type='primary'
+            disabled={isLoading.images}
+          />
+        </div>
+      ) : null}
     </div>
   );
 };

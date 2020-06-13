@@ -38,6 +38,7 @@ const Header = ({
         value={keyword}
         onChange={handleKeywordChange}
       />
+
       <Select
         label='Puzzle row count:'
         value={rows}
@@ -58,7 +59,6 @@ const Header = ({
         <option value='6'>6</option>
         <option value='8'>8</option>
       </Select>
-
       <Checkbox
         name='useRandomImage'
         type='checkbox'

@@ -8,21 +8,17 @@ export default function App() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [useRandomImage, setUseRandomImage] = useState(null);
   const [startGame, setStartGame] = useState(null);
-  const [puzzleSize, setPuzzleSize] = useState({
-    rows: 4,
-    columns: 6,
-    pieceSize: 100
-  });
+  const [piecesCount, setPiecesCount] = useState(16);
 
   return (
     <>
       {startGame ? (
-        <GameBoard selectedImage={selectedImage} puzzleSize={puzzleSize} />
+        <GameBoard selectedImage={selectedImage} piecesCount={piecesCount} />
       ) : (
         <>
           <Header
-            puzzleSize={puzzleSize}
-            setPuzzleSize={setPuzzleSize}
+            piecesCount={piecesCount}
+            setPiecesCount={setPiecesCount}
             keyword={keyword}
             setKeyword={setKeyword}
             useRandomImage={useRandomImage}

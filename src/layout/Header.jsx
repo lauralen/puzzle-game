@@ -7,8 +7,8 @@ import Input from 'components/Input';
 import Checkbox from 'components/Checkbox';
 
 const Header = ({
-  puzzleSize,
-  setPuzzleSize,
+  piecesCount,
+  setPiecesCount,
   keyword,
   setKeyword,
   useRandomImage,
@@ -16,11 +16,8 @@ const Header = ({
   setStartGame,
   selectedImage
 }) => {
-  const { rows, columns } = puzzleSize;
-
   const handleChange = event => {
-    const { name, value } = event.target;
-    setPuzzleSize({ ...puzzleSize, [name]: Number(value) });
+    setPiecesCount(Number(event.target.value));
   };
 
   const handleKeywordChange = event => {
@@ -40,24 +37,14 @@ const Header = ({
       />
 
       <Select
-        label='Puzzle row count:'
-        value={rows}
-        name='rows'
+        label='Puzzle size:'
+        value={piecesCount}
+        name='piecesCount'
         onChange={handleChange}
       >
-        <option value='4'>4</option>
-        <option value='6'>6</option>
-        <option value='8'>8</option>
-      </Select>
-      <Select
-        label='Puzzle column count:'
-        value={columns}
-        name='columns'
-        onChange={handleChange}
-      >
-        <option value='4'>4</option>
-        <option value='6'>6</option>
-        <option value='8'>8</option>
+        <option value='16'>16 pieces</option>
+        <option value='36'>36 pieces</option>
+        <option value='64'>64 pieces</option>
       </Select>
       <Checkbox
         name='useRandomImage'

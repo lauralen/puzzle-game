@@ -4,24 +4,25 @@ import unsplashId from 'utils/unsplashId';
 import Loader from 'components/Loader';
 import style from './GameBoard.module.scss';
 
-const GameBoard = ({ selectedImage, puzzleSize }) => {
+const GameBoard = ({ selectedImage, piecesCount }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
   const [pieces, setPieces] = useState([]);
   const [shuffled, setShuffled] = useState([]);
 
-  const { rows, columns, pieceSize } = puzzleSize;
+  const pieceSize = 100;
+  const piecesPerSide = Math.sqrt(piecesCount);
+  const sideLength = piecesPerSide * pieceSize;
+
   const unsplashUrl = 'https://api.unsplash.com/';
-  const height = puzzleSize.rows * 100;
-  const width = puzzleSize.columns * 100;
 
   useEffect(() => {
     setIsLoading(true);
 
     selectedImage
       ? setImageUrl(
-          selectedImage.urls.raw + `&h=${height}&w=${width}&fit=clamp`
+          selectedImage.urls.raw + `&h=${sideLength}&w=${sideLength}&fit=clamp`
         )
       : fetchRandomImage();
 
@@ -36,8 +37,8 @@ const GameBoard = ({ selectedImage, puzzleSize }) => {
     try {
       const res = await axios.get(`${unsplashUrl}photos/random`, {
         params: {
-          h: height,
-          w: width,
+          h: sideLength,
+          w: sideLength,
           fit: 'clamp'
         },
         headers: {
@@ -53,7 +54,6 @@ const GameBoard = ({ selectedImage, puzzleSize }) => {
   }
 
   const getPieces = () => {
-    const piecesCount = rows * columns;
     let pieces = [...Array(piecesCount)];
 
     return pieces.map((piece, index) => {
@@ -76,11 +76,11 @@ const GameBoard = ({ selectedImage, puzzleSize }) => {
   };
 
   const getColumn = index => {
-    return index < columns ? index : getColumn(index - columns);
+    return index < piecesPerSide ? index : getColumn(index - piecesPerSide);
   };
 
   const getRow = (index, column) => {
-    return (index - column) / columns;
+    return (index - column) / piecesPerSide;
   };
 
   const getShuffledPieces = pieces => {
@@ -128,8 +128,8 @@ const GameBoard = ({ selectedImage, puzzleSize }) => {
           <div
             className={style.puzzle}
             style={{
-              width: `${columns * 100}px`,
-              height: `${rows * 100}px`,
+              width: `${piecesPerSide * pieceSize}px`,
+              height: `${piecesPerSide * pieceSize}px`,
               backgroundImage: `url(${imageUrl})`
             }}
           >

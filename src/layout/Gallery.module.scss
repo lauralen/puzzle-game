@@ -2,7 +2,9 @@
 @import '~styles/mixins';
 
 .gallery {
-  min-height: calc(100vh - #{$header-height});
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   padding: $spacing-md;
   padding-top: $header-height + $spacing-md;
   background-color: $color-lightgrey;
@@ -38,7 +40,6 @@
 
         .credits {
           position: absolute;
-          visibility: visible;
           width: 100%;
           bottom: 0;
           padding: $spacing-xs;
@@ -62,12 +63,7 @@
     }
   }
 
-  .buttonWrapper {
-    display: flex;
-    justify-content: center;
-
-    button {
-      margin-top: $spacing-md;
-    }
+  button {
+    margin: $spacing-md auto 0 auto;
   }
 }

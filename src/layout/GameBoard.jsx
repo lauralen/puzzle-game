@@ -139,18 +139,24 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
               return (
                 <div
                   key={piece.position}
-                  className={piece.solved ? style.solved : null}
+                  className={
+                    shuffled.length
+                      ? piece.solved
+                        ? style.solved
+                        : null
+                      : style.completed
+                  }
                   onDragOver={event => onDragOver(event)}
                   onDrop={event => {
                     onDrop(event, piece.position);
                   }}
                 >
                   {piece.position}
-                  {piece.solved}
                 </div>
               );
             })}
           </div>
+
           {shuffled.length ? (
             <div className={style.pieces}>
               {shuffled.map(piece => {

@@ -30,6 +30,10 @@
     .solved {
       background-color: transparent;
     }
+
+    & + button {
+      margin-top: $spacing-md;
+    }
   }
 
   .pieces {

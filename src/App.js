@@ -13,7 +13,11 @@ export default function App() {
   return (
     <>
       {startGame ? (
-        <GameBoard selectedImage={selectedImage} piecesCount={piecesCount} />
+        <GameBoard
+          selectedImage={selectedImage}
+          piecesCount={piecesCount}
+          setStartGame={setStartGame}
+        />
       ) : (
         <>
           <Header

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import unsplashId from 'utils/unsplashId';
-import Loader from 'components/Loader';
 import style from './GameBoard.module.scss';
 
-const GameBoard = ({ selectedImage, piecesCount }) => {
+import Loader from 'components/Loader';
+import Button from 'components/Button';
+
+const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
@@ -149,23 +151,33 @@ const GameBoard = ({ selectedImage, piecesCount }) => {
               );
             })}
           </div>
-          <div className={style.pieces}>
-            {shuffled.map(piece => {
-              return (
-                <div
-                  key={piece.position}
-                  draggable
-                  onDragStart={event => onDragStart(event, piece.position)}
-                  style={{
-                    backgroundImage: `url(${imageUrl})`,
-                    backgroundPosition: `${piece.backgroundPosition}`
-                  }}
-                >
-                  {piece.position}
-                </div>
-              );
-            })}
-          </div>
+          {shuffled.length ? (
+            <div className={style.pieces}>
+              {shuffled.map(piece => {
+                return (
+                  <div
+                    key={piece.position}
+                    draggable
+                    onDragStart={event => onDragStart(event, piece.position)}
+                    style={{
+                      backgroundImage: `url(${imageUrl})`,
+                      backgroundPosition: `${piece.backgroundPosition}`
+                    }}
+                  >
+                    {piece.position}
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <Button
+              type='primary'
+              title='Go back to main page'
+              action={() => {
+                setStartGame(false);
+              }}
+            />
+          )}
         </>
       )}
     </div>

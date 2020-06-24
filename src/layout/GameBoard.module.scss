@@ -55,4 +55,19 @@
       cursor: grab;
     }
   }
+
+  .controls {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: $spacing-sm $spacing-md;
+    background-color: $color-black;
+
+    div {
+      color: $color-white;
+    }
+  }
 }

@@ -157,35 +157,35 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
             })}
           </div>
 
-          {shuffled.length ? (
-            <div className={style.pieces}>
-              {shuffled.map(piece => {
-                return (
-                  <div
-                    key={piece.position}
-                    draggable
-                    onDragStart={event => onDragStart(event, piece.position)}
-                    style={{
-                      backgroundImage: `url(${imageUrl})`,
-                      backgroundPosition: `${piece.backgroundPosition}`
-                    }}
-                  >
-                    {piece.position}
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <Button
-              type='primary'
-              title='Go back to main page'
-              action={() => {
-                setStartGame(false);
-              }}
-            />
-          )}
+          <div className={style.pieces}>
+            {shuffled.map(piece => {
+              return (
+                <div
+                  key={piece.position}
+                  draggable
+                  onDragStart={event => onDragStart(event, piece.position)}
+                  style={{
+                    backgroundImage: `url(${imageUrl})`,
+                    backgroundPosition: `${piece.backgroundPosition}`
+                  }}
+                >
+                  {piece.position}
+                </div>
+              );
+            })}
+          </div>
         </>
       )}
+
+      <div className={style.controls}>
+        <Button
+          type='secondary'
+          title='Go back to main page'
+          action={() => {
+            setStartGame(false);
+          }}
+        />
+      </div>
     </div>
   );
 };

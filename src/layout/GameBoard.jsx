@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import unsplashId from 'utils/unsplashId';
 import style from './GameBoard.module.scss';
+import { formatTime } from 'utils/functions';
 
 import Loader from 'components/Loader';
 import Button from 'components/Button';
@@ -12,6 +13,7 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
   const [imageUrl, setImageUrl] = useState(null);
   const [pieces, setPieces] = useState([]);
   const [shuffled, setShuffled] = useState([]);
+  const [time, setTime] = useState(0);
 
   const pieceSize = 100;
   const piecesPerSide = Math.sqrt(piecesCount);
@@ -34,6 +36,13 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
     setShuffled(getShuffledPieces(pieces));
     setIsLoading(false);
   }, []);
+
+  React.useEffect(() => {
+    if (!isLoading && shuffled.length) {
+      const timer = setInterval(() => setTime(time + 1), 1000);
+      return () => clearInterval(timer);
+    }
+  }, [time]);
 
   async function fetchRandomImage() {
     try {
@@ -98,6 +107,7 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
 
   const onDragStart = (event, piece) => {
     event.dataTransfer.setData('piece', piece);
+    time === 0 && setTime(1);
   };
 
   const onDragOver = event => {
@@ -178,6 +188,7 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
       )}
 
       <div className={style.controls}>
+        <div>{formatTime(time)}</div>
         <Button
           type='secondary'
           title='Go back to main page'

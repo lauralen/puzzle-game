@@ -61,12 +61,13 @@
     bottom: 0;
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     padding: $spacing-sm $spacing-md;
     background-color: $color-black;
 
     div {
+      margin-right: auto;
       color: $color-white;
       cursor: default;
     }

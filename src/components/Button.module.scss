@@ -12,6 +12,10 @@ button {
   transition: $transition;
   cursor: pointer;
 
+  & + button {
+    margin-left: $spacing-md;
+  }
+
   &:hover {
     -webkit-box-shadow: 0px 0px 50px -13px rgba(0, 0, 0, 0.75);
     -moz-box-shadow: 0px 0px 50px -13px rgba(0, 0, 0, 0.75);

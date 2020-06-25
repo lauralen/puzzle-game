@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from 'layout/Header';
 import Gallery from 'layout/Gallery';
 import GameBoard from 'layout/GameBoard';
@@ -6,9 +6,16 @@ import GameBoard from 'layout/GameBoard';
 export default function App() {
   const [keyword, setKeyword] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
-  const [useRandomImage, setUseRandomImage] = useState(null);
-  const [startGame, setStartGame] = useState(null);
+  const [useRandomImage, setUseRandomImage] = useState(false);
+  const [startGame, setStartGame] = useState(false);
   const [piecesCount, setPiecesCount] = useState(16);
+
+  useEffect(() => {
+    if (!startGame) {
+      setSelectedImage(null);
+      setUseRandomImage(false);
+    }
+  }, [startGame]);
 
   return (
     <>

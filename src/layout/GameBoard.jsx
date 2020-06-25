@@ -37,8 +37,21 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
     setIsLoading(false);
   }, []);
 
-  React.useEffect(() => {
-    if (!isLoading && shuffled.length) {
+  const reset = () => {
+    setTime(0);
+    setIsLoading(true);
+
+    let updatedPieces = pieces.map(piece => {
+      return { ...piece, solved: false };
+    });
+
+    setPieces(updatedPieces);
+    setShuffled(getShuffledPieces(updatedPieces));
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    if (shuffled.length && time !== 0) {
       const timer = setInterval(() => setTime(time + 1), 1000);
       return () => clearInterval(timer);
     }
@@ -184,19 +197,29 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
               );
             })}
           </div>
+
+          <div className={style.controls}>
+            <div>{formatTime(time)}</div>
+
+            {!shuffled.length && (
+              <Button
+                type='secondary'
+                title='Play again'
+                action={() => {
+                  reset();
+                }}
+              />
+            )}
+            <Button
+              type={shuffled.length ? 'secondary' : 'primary'}
+              title='Go back to gallery'
+              action={() => {
+                setStartGame(false);
+              }}
+            />
+          </div>
         </>
       )}
-
-      <div className={style.controls}>
-        <div>{formatTime(time)}</div>
-        <Button
-          type='secondary'
-          title='Go back to main page'
-          action={() => {
-            setStartGame(false);
-          }}
-        />
-      </div>
     </div>
   );
 };

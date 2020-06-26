@@ -9,7 +9,7 @@ import Button from 'components/Button';
 const Gallery = ({ keyword, selectedImage, setSelectedImage }) => {
   const [images, setImages] = useState([]);
   const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState({ page: true, images: false });
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
 
   const unsplashUrl = 'https://api.unsplash.com/';
@@ -17,7 +17,7 @@ const Gallery = ({ keyword, selectedImage, setSelectedImage }) => {
   useEffect(() => {
     setError();
     setImages([]);
-    setIsLoading({ ...isLoading, page: true });
+    setIsLoading(true);
 
     setPage(1);
     keyword === '' ? fetchImages() : fetchImagesByKeyword(keyword);
@@ -30,7 +30,7 @@ const Gallery = ({ keyword, selectedImage, setSelectedImage }) => {
 
   async function fetchImages() {
     try {
-      setIsLoading({ ...isLoading, images: true });
+      setIsLoading(true);
 
       const res = await axios.get(`${unsplashUrl}photos`, {
         params: { page: page, per_page: 20 },
@@ -40,17 +40,17 @@ const Gallery = ({ keyword, selectedImage, setSelectedImage }) => {
       });
 
       setImages(images.concat(res.data));
-      setIsLoading({ images: false, page: false });
+      setIsLoading(false);
     } catch (err) {
       setError('Oops! Something went wrong');
       console.log(err);
-      setIsLoading({ images: false, page: false });
+      setIsLoading(false);
     }
   }
 
   async function fetchImagesByKeyword() {
     try {
-      setIsLoading({ ...isLoading, images: true });
+      setIsLoading(true);
 
       const res = await axios.get(`${unsplashUrl}search/photos`, {
         params: { query: keyword, page: page, per_page: 20 },
@@ -60,74 +60,68 @@ const Gallery = ({ keyword, selectedImage, setSelectedImage }) => {
       });
 
       setImages(images.concat(res.data.results));
-      setIsLoading({ images: false, page: false });
+      setIsLoading(false);
     } catch (err) {
       setError('Oops! Something went wrong');
       console.log(err);
-      setIsLoading({ images: false, page: false });
+      setIsLoading(false);
     }
   }
 
   return (
     <div className={style.gallery}>
-      {isLoading.page ? (
-        <Loader />
-      ) : error ? (
-        <p>{error}</p>
-      ) : (
-        <div className={style.grid}>
-          {images &&
-            images.map((img, index) => {
-              return (
-                <div
-                  key={index}
-                  className={[
-                    style.img,
-                    img === selectedImage ? style.selected : null
-                  ].join(' ')}
-                  style={{
-                    backgroundImage: `url(${img.urls.regular})`
-                  }}
-                  onClick={() => {
-                    setSelectedImage(
-                      selectedImage === images[index] ? null : images[index]
-                    );
-                  }}
-                >
-                  <div className={style.credits}>
-                    Photo by{' '}
-                    <a
-                      href={img.user.links.html}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                    >
-                      {img.user.name}
-                    </a>{' '}
-                    /{' '}
-                    <a
-                      href='https://unsplash.com/'
-                      target='_blank'
-                      rel='noopener noreferrer'
-                    >
-                      Unsplash
-                    </a>
-                  </div>
+      <div className={style.grid}>
+        {images &&
+          images.map((img, index) => {
+            return (
+              <div
+                key={index}
+                className={[
+                  style.img,
+                  img === selectedImage ? style.selected : null
+                ].join(' ')}
+                style={{
+                  backgroundImage: `url(${img.urls.regular})`
+                }}
+                onClick={() => {
+                  setSelectedImage(
+                    selectedImage === images[index] ? null : images[index]
+                  );
+                }}
+              >
+                <div className={style.credits}>
+                  Photo by{' '}
+                  <a
+                    href={img.user.links.html}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    {img.user.name}
+                  </a>{' '}
+                  /{' '}
+                  <a
+                    href='https://unsplash.com/'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    Unsplash
+                  </a>
                 </div>
-              );
-            })}
-        </div>
-      )}
-
-      {!isLoading.page && page <= 5 ? (
+              </div>
+            );
+          })}
+      </div>
+      {error && <p>{error}</p>}
+      {isLoading && <Loader />}
+      {!isLoading && page <= 5 && (
         <Button
           action={() => {
             setPage(page + 1);
           }}
           title='Load more'
           type='primary'
-          disabled={isLoading.images}
         />
-      ) : null}
+      )}
     </div>
   );
 };

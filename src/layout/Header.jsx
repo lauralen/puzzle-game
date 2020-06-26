@@ -16,31 +16,19 @@ const Header = ({
   setStartGame,
   selectedImage
 }) => {
-  const handleChange = event => {
-    setPiecesCount(Number(event.target.value));
-  };
-
-  const handleKeywordChange = event => {
-    setKeyword(event.target.value);
-  };
-
-  const handleCheck = event => {
-    setUseRandomImage(event.target.checked);
-  };
-
   return (
     <header className={style.header}>
       <Input
         placeholder='Search images'
         value={keyword}
-        onChange={handleKeywordChange}
+        onChange={event => setKeyword(event.target.value)}
       />
 
       <Select
         label='Puzzle size:'
         value={piecesCount}
         name='piecesCount'
-        onChange={handleChange}
+        onChange={event => setPiecesCount(Number(event.target.value))}
       >
         <option value='16'>16 pieces</option>
         <option value='36'>36 pieces</option>
@@ -51,7 +39,7 @@ const Header = ({
         type='checkbox'
         checked={useRandomImage}
         label='Use random image'
-        onChange={handleCheck}
+        onChange={event => setUseRandomImage(event.target.checked)}
       />
       <Button
         type='primary'

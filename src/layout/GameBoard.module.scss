@@ -47,6 +47,7 @@
     flex-wrap: wrap;
     justify-content: center;
     padding-top: $spacing-md;
+    padding-bottom: $spacing-lg;
 
     div {
       width: 100px;
@@ -57,7 +58,7 @@
   }
 
   .controls {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     width: 100%;
     display: flex;

@@ -11,6 +11,18 @@ export default function App() {
   const [piecesCount, setPiecesCount] = useState(16);
 
   useEffect(() => {
+    if (useRandomImage && selectedImage) {
+      setSelectedImage(null);
+    }
+  }, [useRandomImage]);
+
+  useEffect(() => {
+    if (useRandomImage && selectedImage) {
+      setUseRandomImage(false);
+    }
+  }, [selectedImage]);
+
+  useEffect(() => {
     if (!startGame) {
       setSelectedImage(null);
       setUseRandomImage(false);

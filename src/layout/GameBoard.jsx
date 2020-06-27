@@ -57,7 +57,7 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
     }
   }, [time]);
 
-  async function fetchRandomImage() {
+  const fetchRandomImage = async () => {
     try {
       const res = await axios.get(`${unsplashUrl}photos/random`, {
         params: {
@@ -75,7 +75,7 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
       setError('Oops! Something went wrong');
       setIsLoading(false);
     }
-  }
+  };
 
   const getPieces = () => {
     let pieces = [...Array(piecesCount)];

@@ -28,7 +28,7 @@ const Gallery = ({ keyword, selectedImage, setSelectedImage }) => {
     keyword === '' ? fetchImages() : fetchImagesByKeyword(keyword);
   }, [page]);
 
-  async function fetchImages() {
+  const fetchImages = async () => {
     try {
       setIsLoading(true);
 
@@ -46,9 +46,9 @@ const Gallery = ({ keyword, selectedImage, setSelectedImage }) => {
       console.log(err);
       setIsLoading(false);
     }
-  }
+  };
 
-  async function fetchImagesByKeyword() {
+  const fetchImagesByKeyword = async () => {
     try {
       setIsLoading(true);
 
@@ -66,7 +66,7 @@ const Gallery = ({ keyword, selectedImage, setSelectedImage }) => {
       console.log(err);
       setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className={style.gallery}>

@@ -115,7 +115,20 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
   };
 
   const onDragStart = (event, index) => {
-    event.dataTransfer.setData('index', index);
+    const { target, dataTransfer, clientX, clientY } = event;
+
+    let style = window.getComputedStyle(target, null);
+
+    dataTransfer.setData('index', index);
+    dataTransfer.setData(
+      'leftOffset',
+      parseInt(style.getPropertyValue('left'), 10) - clientX
+    );
+    dataTransfer.setData(
+      'topOffset',
+      parseInt(style.getPropertyValue('top'), 10) - clientY
+    );
+
     timeCounter === 0 && setTimeCounter(1);
   };
 
@@ -124,10 +137,14 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
   };
 
   const onDrop = event => {
-    const index = Number(event.dataTransfer.getData('index'));
+    const { dataTransfer, clientX, clientY } = event;
 
-    pieces[index].positionY = event.clientY - 50;
-    pieces[index].positionX = event.clientX - 50;
+    const index = Number(dataTransfer.getData('index'));
+
+    pieces[index].positionX =
+      clientX + Number(dataTransfer.getData('leftOffset'));
+    pieces[index].positionY =
+      clientY + Number(dataTransfer.getData('topOffset'));
 
     setPieces(pieces);
   };

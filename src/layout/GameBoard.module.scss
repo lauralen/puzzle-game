@@ -3,36 +3,17 @@
 
 .gameBoard {
   display: flex;
-  flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  padding-top: $spacing-md;
+  overflow: hidden;
+  padding-top: $spacing-lg;
   background-color: $color-darkgrey;
 
-  .pieces {
-    div {
-      position: absolute;
-      width: 100px;
-      height: 100px;
-      opacity: 1;
-      cursor: grab;
-    }
-  }
-
-  .controls {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding: $spacing-sm $spacing-md;
-    background-color: $color-black;
-
-    div {
-      margin-right: auto;
-      color: $color-white;
-      cursor: default;
-    }
+  .pieces div {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    opacity: 1;
+    cursor: grab;
   }
 }

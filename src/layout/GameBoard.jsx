@@ -5,7 +5,7 @@ import style from './GameBoard.module.scss';
 import { getRandomNumberInRange, formatTime } from 'utils/functions';
 
 import Loader from 'components/Loader';
-import Button from 'components/Button';
+import GameControls from 'layout/GameControls';
 
 const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -126,62 +126,50 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
   };
 
   return (
-    <div
-      className={style.gameBoard}
-      onDragOver={event => onDragOver(event)}
-      onDrop={event => {
-        onDrop(event);
-      }}
-    >
-      {isLoading || !imageUrl ? (
-        <Loader />
-      ) : error ? (
-        <p>{error}</p>
-      ) : (
-        <>
-          <div className={style.pieces}>
-            {pieces.map(piece => {
-              return (
-                <div
-                  key={piece.index}
-                  draggable
-                  onDragStart={event => onDragStart(event, piece.index)}
-                  style={{
-                    backgroundImage: `url(${imageUrl})`,
-                    backgroundPosition: `${piece.backgroundPosition}`,
-                    top: piece.positionY,
-                    left: piece.positionX
-                  }}
-                >
-                  {piece.index}
-                </div>
-              );
-            })}
-          </div>
+    <>
+      <div
+        className={style.gameBoard}
+        onDragOver={event => onDragOver(event)}
+        onDrop={event => {
+          onDrop(event);
+        }}
+      >
+        {isLoading || !imageUrl ? (
+          <Loader />
+        ) : error ? (
+          <p>{error}</p>
+        ) : (
+          <>
+            <div className={style.pieces}>
+              {pieces.map(piece => {
+                return (
+                  <div
+                    key={piece.index}
+                    draggable
+                    onDragStart={event => onDragStart(event, piece.index)}
+                    style={{
+                      backgroundImage: `url(${imageUrl})`,
+                      backgroundPosition: `${piece.backgroundPosition}`,
+                      top: piece.positionY,
+                      left: piece.positionX
+                    }}
+                  >
+                    {piece.index}
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+      </div>
 
-          <div className={style.controls}>
-            <div>{formatTime(time)}</div>
-
-            {!pieces.length && (
-              <Button
-                type='secondary'
-                title='Play again'
-                action={() => {
-                  reset();
-                }}
-              />
-            )}
-            <Button
-              type={pieces.length ? 'secondary' : 'primary'}
-              title='Go back to gallery'
-              action={() => {
-                setStartGame(false);
-              }}
-            />
-          </div>
-        </>
-      )}
-    </div>
+      <GameControls
+        time={formatTime(time)}
+        pieces={pieces}
+        reset={reset}
+        setStartGame={setStartGame}
+      />
+    </>
   );
 };
 

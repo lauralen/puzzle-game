@@ -7,3 +7,7 @@ export const formatTime = time => {
 
   return `${minutes}:${seconds}`;
 };
+
+export const getRandomNumberInRange = (min, max) => {
+  return Math.random() * (max - min) + min;
+};

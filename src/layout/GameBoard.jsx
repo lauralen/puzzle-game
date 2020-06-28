@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import unsplashId from 'utils/unsplashId';
 import style from './GameBoard.module.scss';
-import { formatTime } from 'utils/functions';
+import { getRandomNumberInRange, formatTime } from 'utils/functions';
 
 import Loader from 'components/Loader';
 import Button from 'components/Button';
@@ -12,7 +12,6 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
   const [error, setError] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
   const [pieces, setPieces] = useState([]);
-  const [shuffled, setShuffled] = useState([]);
   const [time, setTime] = useState(0);
 
   const pieceSize = 100;
@@ -33,7 +32,6 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
     let pieces = getPieces();
 
     setPieces(pieces);
-    setShuffled(getShuffledPieces(pieces));
     setIsLoading(false);
   }, []);
 
@@ -46,12 +44,11 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
     });
 
     setPieces(updatedPieces);
-    setShuffled(getShuffledPieces(updatedPieces));
     setIsLoading(false);
   };
 
   useEffect(() => {
-    if (shuffled.length && time !== 0) {
+    if (pieces.length && time !== 0) {
       const timer = setInterval(() => setTime(time + 1), 1000);
       return () => clearInterval(timer);
     }
@@ -85,8 +82,9 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
         index,
         solved: false,
         backgroundPosition: getBackgroundPosition(index),
-        positionX: 100,
-        positionY: 100
+        // ensure pieces are positioned within gameboard
+        positionX: getRandomNumberInRange(50, window.innerWidth - 100),
+        positionY: getRandomNumberInRange(50, window.innerHeight - 200)
       });
     });
   };
@@ -109,17 +107,6 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
     return (index - column) / piecesPerSide;
   };
 
-  const getShuffledPieces = pieces => {
-    let shuffled = [...pieces];
-
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      let j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-
-    return shuffled;
-  };
-
   const onDragStart = (event, index) => {
     event.dataTransfer.setData('index', index);
     time === 0 && setTime(1);
@@ -136,7 +123,6 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
     pieces[index].positionX = event.clientX - 50;
 
     setPieces(pieces);
-    setShuffled(pieces);
   };
 
   return (
@@ -154,7 +140,7 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
       ) : (
         <>
           <div className={style.pieces}>
-            {shuffled.map(piece => {
+            {pieces.map(piece => {
               return (
                 <div
                   key={piece.index}
@@ -176,7 +162,7 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
           <div className={style.controls}>
             <div>{formatTime(time)}</div>
 
-            {!shuffled.length && (
+            {!pieces.length && (
               <Button
                 type='secondary'
                 title='Play again'
@@ -186,7 +172,7 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
               />
             )}
             <Button
-              type={shuffled.length ? 'secondary' : 'primary'}
+              type={pieces.length ? 'secondary' : 'primary'}
               title='Go back to gallery'
               action={() => {
                 setStartGame(false);

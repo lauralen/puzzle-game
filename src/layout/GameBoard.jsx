@@ -5,7 +5,7 @@ import style from './GameBoard.module.scss';
 import { formatTime } from 'utils/functions';
 
 import Loader from 'components/Loader';
-import Button from 'components/Button';
+import GameControls from 'layout/GameControls';
 
 const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -143,84 +143,72 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
   };
 
   return (
-    <div className={style.gameBoard}>
-      {isLoading || !imageUrl ? (
-        <Loader />
-      ) : error ? (
-        <p>{error}</p>
-      ) : (
-        <>
-          <div
-            className={style.puzzle}
-            style={{
-              width: `${piecesPerSide * pieceSize}px`,
-              height: `${piecesPerSide * pieceSize}px`,
-              backgroundImage: `url(${imageUrl})`
-            }}
-          >
-            {pieces.map(piece => {
-              return (
-                <div
-                  key={piece.position}
-                  className={
-                    shuffled.length
-                      ? piece.solved
-                        ? style.solved
-                        : null
-                      : style.completed
-                  }
-                  onDragOver={event => onDragOver(event)}
-                  onDrop={event => {
-                    onDrop(event, piece.position);
-                  }}
-                >
-                  {piece.position}
-                </div>
-              );
-            })}
-          </div>
-
-          <div className={style.pieces}>
-            {shuffled.map(piece => {
-              return (
-                <div
-                  key={piece.position}
-                  draggable
-                  onDragStart={event => onDragStart(event, piece.position)}
-                  style={{
-                    backgroundImage: `url(${imageUrl})`,
-                    backgroundPosition: `${piece.backgroundPosition}`
-                  }}
-                >
-                  {piece.position}
-                </div>
-              );
-            })}
-          </div>
-
-          <div className={style.controls}>
-            <div>{formatTime(time)}</div>
-
-            {!shuffled.length && (
-              <Button
-                type='secondary'
-                title='Play again'
-                action={() => {
-                  reset();
-                }}
-              />
-            )}
-            <Button
-              type={shuffled.length ? 'secondary' : 'primary'}
-              title='Go back to gallery'
-              action={() => {
-                setStartGame(false);
+    <>
+      <div className={style.gameBoard}>
+        {isLoading || !imageUrl ? (
+          <Loader />
+        ) : error ? (
+          <p>{error}</p>
+        ) : (
+          <>
+            <div
+              className={style.puzzle}
+              style={{
+                width: `${piecesPerSide * pieceSize}px`,
+                height: `${piecesPerSide * pieceSize}px`,
+                backgroundImage: `url(${imageUrl})`
               }}
-            />
-          </div>
-        </>
-      )}
-    </div>
+            >
+              {pieces.map(piece => {
+                return (
+                  <div
+                    key={piece.position}
+                    className={
+                      shuffled.length
+                        ? piece.solved
+                          ? style.solved
+                          : null
+                        : style.completed
+                    }
+                    onDragOver={event => onDragOver(event)}
+                    onDrop={event => {
+                      onDrop(event, piece.position);
+                    }}
+                  >
+                    {piece.position}
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className={style.pieces}>
+              {shuffled.map(piece => {
+                return (
+                  <div
+                    key={piece.position}
+                    draggable
+                    onDragStart={event => onDragStart(event, piece.position)}
+                    style={{
+                      backgroundImage: `url(${imageUrl})`,
+                      backgroundPosition: `${piece.backgroundPosition}`
+                    }}
+                  >
+                    {piece.position}
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+      </div>
+
+      <GameControls
+        time={formatTime(time)}
+        pieces={pieces}
+        reset={reset}
+        setStartGame={setStartGame}
+      />
+    </>
   );
 };
 

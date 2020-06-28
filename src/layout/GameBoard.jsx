@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import unsplashId from 'utils/unsplashId';
 import style from './GameBoard.module.scss';
+
+import unsplashId from 'utils/unsplashId';
 import { getRandomNumberInRange, formatTime } from 'utils/functions';
 
 import Loader from 'components/Loader';
@@ -12,11 +13,11 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
   const [error, setError] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
   const [pieces, setPieces] = useState([]);
-  const [time, setTime] = useState(0);
+  const [timeCounter, setTimeCounter] = useState(0);
 
   const pieceSize = 100;
-  const piecesPerSide = Math.sqrt(piecesCount);
-  const sideLength = piecesPerSide * pieceSize;
+  const piecesPerPuzzleSide = Math.sqrt(piecesCount);
+  const puzzleSideLength = piecesPerPuzzleSide * pieceSize;
 
   const unsplashUrl = 'https://api.unsplash.com/';
 
@@ -25,7 +26,8 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
 
     selectedImage
       ? setImageUrl(
-          selectedImage.urls.raw + `&h=${sideLength}&w=${sideLength}&fit=clamp`
+          selectedImage.urls.raw +
+            `&h=${puzzleSideLength}&w=${puzzleSideLength}&fit=clamp`
         )
       : fetchRandomImage();
 
@@ -35,8 +37,18 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
     setIsLoading(false);
   }, []);
 
+  useEffect(() => {
+    if (pieces.length && timeCounter !== 0) {
+      const timeCounter = setInterval(
+        () => setTimeCounter(timeCounter + 1),
+        1000
+      );
+      return () => clearInterval(timeCounter);
+    }
+  }, [timeCounter]);
+
   const reset = () => {
-    setTime(0);
+    setTimeCounter(0);
     setIsLoading(true);
 
     let updatedPieces = pieces.map(piece => {
@@ -47,19 +59,12 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
     setIsLoading(false);
   };
 
-  useEffect(() => {
-    if (pieces.length && time !== 0) {
-      const timer = setInterval(() => setTime(time + 1), 1000);
-      return () => clearInterval(timer);
-    }
-  }, [time]);
-
   const fetchRandomImage = async () => {
     try {
       const res = await axios.get(`${unsplashUrl}photos/random`, {
         params: {
-          h: sideLength,
-          w: sideLength,
+          h: puzzleSideLength,
+          w: puzzleSideLength,
           fit: 'clamp'
         },
         headers: {
@@ -100,23 +105,25 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
   };
 
   const getColumn = index => {
-    return index < piecesPerSide ? index : getColumn(index - piecesPerSide);
+    return index < piecesPerPuzzleSide
+      ? index
+      : getColumn(index - piecesPerPuzzleSide);
   };
 
   const getRow = (index, column) => {
-    return (index - column) / piecesPerSide;
+    return (index - column) / piecesPerPuzzleSide;
   };
 
   const onDragStart = (event, index) => {
     event.dataTransfer.setData('index', index);
-    time === 0 && setTime(1);
+    timeCounter === 0 && setTimeCounter(1);
   };
 
   const onDragOver = event => {
     event.preventDefault();
   };
 
-  const onDrop = (event, target) => {
+  const onDrop = event => {
     const index = Number(event.dataTransfer.getData('index'));
 
     pieces[index].positionY = event.clientY - 50;
@@ -139,32 +146,30 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
         ) : error ? (
           <p>{error}</p>
         ) : (
-          <>
-            <div className={style.pieces}>
-              {pieces.map(piece => {
-                return (
-                  <div
-                    key={piece.index}
-                    draggable
-                    onDragStart={event => onDragStart(event, piece.index)}
-                    style={{
-                      backgroundImage: `url(${imageUrl})`,
-                      backgroundPosition: `${piece.backgroundPosition}`,
-                      top: piece.positionY,
-                      left: piece.positionX
-                    }}
-                  >
-                    {piece.index}
-                  </div>
-                );
-              })}
-            </div>
-          </>
+          <div className={style.pieces}>
+            {pieces.map(piece => {
+              return (
+                <div
+                  key={piece.index}
+                  draggable
+                  onDragStart={event => onDragStart(event, piece.index)}
+                  style={{
+                    backgroundImage: `url(${imageUrl})`,
+                    backgroundPosition: `${piece.backgroundPosition}`,
+                    top: piece.positionY,
+                    left: piece.positionX
+                  }}
+                >
+                  {piece.index}
+                </div>
+              );
+            })}
+          </div>
         )}
       </div>
 
       <GameControls
-        time={formatTime(time)}
+        time={formatTime(timeCounter)}
         pieces={pieces}
         reset={reset}
         setStartGame={setStartGame}

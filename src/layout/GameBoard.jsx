@@ -82,9 +82,11 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
 
     return pieces.map((piece, index) => {
       return (piece = {
-        position: index,
+        index,
         solved: false,
-        backgroundPosition: getBackgroundPosition(index)
+        backgroundPosition: getBackgroundPosition(index),
+        positionX: 100,
+        positionY: 100
       });
     });
   };
@@ -118,8 +120,8 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
     return shuffled;
   };
 
-  const onDragStart = (event, piece) => {
-    event.dataTransfer.setData('piece', piece);
+  const onDragStart = (event, index) => {
+    event.dataTransfer.setData('index', index);
     time === 0 && setTime(1);
   };
 
@@ -128,71 +130,44 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
   };
 
   const onDrop = (event, target) => {
-    let piece = Number(event.dataTransfer.getData('piece'));
+    const index = Number(event.dataTransfer.getData('index'));
 
-    if (piece === target) {
-      let updatedPieces = pieces.map(piece => {
-        if (piece.position === target) {
-          return { ...piece, solved: true };
-        } else return piece;
-      });
+    pieces[index].positionY = event.clientY - 50;
+    pieces[index].positionX = event.clientX - 50;
 
-      setPieces(updatedPieces);
-      setShuffled(shuffled.filter(piece => piece.position !== target));
-    } else return;
+    setPieces(pieces);
+    setShuffled(pieces);
   };
 
   return (
-    <div className={style.gameBoard}>
+    <div
+      className={style.gameBoard}
+      onDragOver={event => onDragOver(event)}
+      onDrop={event => {
+        onDrop(event);
+      }}
+    >
       {isLoading || !imageUrl ? (
         <Loader />
       ) : error ? (
         <p>{error}</p>
       ) : (
         <>
-          <div
-            className={style.puzzle}
-            style={{
-              width: `${piecesPerSide * pieceSize}px`,
-              height: `${piecesPerSide * pieceSize}px`,
-              backgroundImage: `url(${imageUrl})`
-            }}
-          >
-            {pieces.map(piece => {
-              return (
-                <div
-                  key={piece.position}
-                  className={
-                    shuffled.length
-                      ? piece.solved
-                        ? style.solved
-                        : null
-                      : style.completed
-                  }
-                  onDragOver={event => onDragOver(event)}
-                  onDrop={event => {
-                    onDrop(event, piece.position);
-                  }}
-                >
-                  {piece.position}
-                </div>
-              );
-            })}
-          </div>
-
           <div className={style.pieces}>
             {shuffled.map(piece => {
               return (
                 <div
-                  key={piece.position}
+                  key={piece.index}
                   draggable
-                  onDragStart={event => onDragStart(event, piece.position)}
+                  onDragStart={event => onDragStart(event, piece.index)}
                   style={{
                     backgroundImage: `url(${imageUrl})`,
-                    backgroundPosition: `${piece.backgroundPosition}`
+                    backgroundPosition: `${piece.backgroundPosition}`,
+                    top: piece.positionY,
+                    left: piece.positionX
                   }}
                 >
-                  {piece.position}
+                  {piece.index}
                 </div>
               );
             })}

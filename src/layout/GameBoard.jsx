@@ -139,14 +139,16 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
   const onDrop = event => {
     const { dataTransfer, clientX, clientY } = event;
 
+    let updatedPieces = [...pieces];
+
     const index = Number(dataTransfer.getData('index'));
 
-    pieces[index].positionX =
+    updatedPieces[index].positionX =
       clientX + Number(dataTransfer.getData('leftOffset'));
-    pieces[index].positionY =
+    updatedPieces[index].positionY =
       clientY + Number(dataTransfer.getData('topOffset'));
 
-    setPieces(pieces);
+    setPieces(updatedPieces);
   };
 
   return (

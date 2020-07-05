@@ -9,7 +9,7 @@ export const formatTime = time => {
 };
 
 export const getRandomNumberInRange = (min, max) => {
-  return Math.random() * (max - min) + min;
+  return Math.round(Math.random() * (max - min) + min);
 };
 
 export const getColumn = (index, piecesPerPuzzleSide) => {

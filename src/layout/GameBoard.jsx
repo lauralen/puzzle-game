@@ -3,7 +3,13 @@ import axios from 'axios';
 import style from './GameBoard.module.scss';
 
 import unsplashId from 'utils/unsplashId';
-import { getRandomNumberInRange, formatTime } from 'utils/functions';
+import {
+  getRow,
+  getColumn,
+  getAdjacentPieces,
+  getRandomNumberInRange,
+  formatTime
+} from 'utils/functions';
 
 import Loader from 'components/Loader';
 import GameControls from 'layout/GameControls';
@@ -83,35 +89,26 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
     let pieces = [...Array(piecesCount)];
 
     return pieces.map((piece, index) => {
+      const column = getColumn(index, piecesPerPuzzleSide);
+      const row = getRow(index, column, piecesPerPuzzleSide);
+
       return (piece = {
         index,
         solved: false,
-        backgroundPosition: getBackgroundPosition(index),
+        column,
+        row,
+        backgroundPosition: `${column * -pieceSize}px ${row * -pieceSize}px`,
         // ensure pieces are positioned within gameboard
-        positionX: getRandomNumberInRange(50, window.innerWidth - 100),
-        positionY: getRandomNumberInRange(50, window.innerHeight - 200)
+        left: getRandomNumberInRange(50, window.innerWidth - 100),
+        top: getRandomNumberInRange(50, window.innerHeight - 200),
+        adjacentPieces: getAdjacentPieces(
+          index,
+          column,
+          row,
+          piecesPerPuzzleSide
+        )
       });
     });
-  };
-
-  const getBackgroundPosition = index => {
-    const column = getColumn(index);
-    const row = getRow(index, column);
-
-    let left = column * -pieceSize;
-    let top = row * -pieceSize;
-
-    return `${left}px ${top}px`;
-  };
-
-  const getColumn = index => {
-    return index < piecesPerPuzzleSide
-      ? index
-      : getColumn(index - piecesPerPuzzleSide);
-  };
-
-  const getRow = (index, column) => {
-    return (index - column) / piecesPerPuzzleSide;
   };
 
   const onDragStart = (event, index) => {
@@ -143,9 +140,9 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
 
     const index = Number(dataTransfer.getData('index'));
 
-    updatedPieces[index].positionX =
+    updatedPieces[index].left =
       clientX + Number(dataTransfer.getData('leftOffset'));
-    updatedPieces[index].positionY =
+    updatedPieces[index].top =
       clientY + Number(dataTransfer.getData('topOffset'));
 
     setPieces(updatedPieces);
@@ -175,8 +172,8 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
                   style={{
                     backgroundImage: `url(${imageUrl})`,
                     backgroundPosition: `${piece.backgroundPosition}`,
-                    top: piece.positionY,
-                    left: piece.positionX
+                    top: piece.top,
+                    left: piece.left
                   }}
                 >
                   {piece.index}

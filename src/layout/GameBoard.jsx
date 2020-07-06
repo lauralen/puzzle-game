@@ -24,6 +24,7 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
   const pieceSize = 100;
   const piecesPerPuzzleSide = Math.sqrt(piecesCount);
   const puzzleSideLength = piecesPerPuzzleSide * pieceSize;
+  const maxMergeDistance = 5;
 
   const unsplashUrl = 'https://api.unsplash.com/';
 
@@ -134,18 +135,88 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
   };
 
   const onDrop = event => {
+    const index = Number(event.dataTransfer.getData('index'));
+
+    let updatedPieces = updatePosition(index, event);
+    updatedPieces = mergePieces(index, updatedPieces);
+
+    setPieces(updatedPieces);
+  };
+
+  const updatePosition = (index, event) => {
     const { dataTransfer, clientX, clientY } = event;
 
     let updatedPieces = [...pieces];
-
-    const index = Number(dataTransfer.getData('index'));
 
     updatedPieces[index].left =
       clientX + Number(dataTransfer.getData('leftOffset'));
     updatedPieces[index].top =
       clientY + Number(dataTransfer.getData('topOffset'));
 
-    setPieces(updatedPieces);
+    return updatedPieces;
+  };
+
+  const mergePieces = (index, pieces) => {
+    let piece = pieces[index];
+    let adjacentPieces = piece.adjacentPieces;
+
+    if ('top' in adjacentPieces) {
+      const adjacent = pieces[adjacentPieces.top];
+
+      const verticalDist = Math.abs(adjacent.top - piece.top) - pieceSize;
+      const horizontalDist = Math.abs(adjacent.left - piece.left);
+
+      if (
+        verticalDist <= maxMergeDistance &&
+        horizontalDist <= maxMergeDistance
+      ) {
+        console.log('merged with top');
+      }
+    }
+
+    if ('right' in adjacentPieces) {
+      const adjacent = pieces[adjacentPieces.right];
+
+      const verticalDist = Math.abs(adjacent.top - piece.top);
+      const horizontalDist = Math.abs(adjacent.left - piece.left - pieceSize);
+
+      if (
+        horizontalDist <= maxMergeDistance &&
+        verticalDist <= maxMergeDistance
+      ) {
+        console.log('merged with right');
+      }
+    }
+
+    if ('bottom' in adjacentPieces) {
+      const adjacent = pieces[adjacentPieces.bottom];
+
+      const verticalDist = Math.abs(adjacent.top - piece.top) - pieceSize;
+      const horizontalDist = Math.abs(adjacent.left - piece.left);
+
+      if (
+        verticalDist <= maxMergeDistance &&
+        horizontalDist <= maxMergeDistance
+      ) {
+        console.log('merged with bottom');
+      }
+    }
+
+    if ('left' in adjacentPieces) {
+      const adjacent = pieces[adjacentPieces.left];
+
+      const verticalDist = Math.abs(adjacent.top - piece.top);
+      const horizontalDist = Math.abs(adjacent.left - piece.left) - pieceSize;
+
+      if (
+        horizontalDist <= maxMergeDistance &&
+        verticalDist <= maxMergeDistance
+      ) {
+        console.log('merged with left');
+      }
+    }
+
+    return pieces;
   };
 
   return (

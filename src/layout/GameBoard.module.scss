@@ -9,7 +9,7 @@
   padding-top: $spacing-lg;
   background-color: $color-darkgrey;
 
-  .pieces div {
+  .pieces > div {
     position: absolute;
     width: 100px;
     height: 100px;

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import style from './GameBoard.module.scss';
+import Piece from 'components/Piece';
 
 import unsplashId from 'utils/unsplashId';
 import {
   getRow,
   getColumn,
   getAdjacentPieces,
-  getRandomNumberInRange,
-  formatTime
+  getRandomNumberInRange
 } from 'utils/functions';
 
 import Loader from 'components/Loader';
@@ -19,7 +19,7 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
   const [error, setError] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
   const [pieces, setPieces] = useState([]);
-  const [timeCounter, setTimeCounter] = useState(0);
+  const [isTimerActive, setIsTimerActive] = useState(false);
 
   const pieceSize = 100;
   const piecesPerPuzzleSide = Math.sqrt(piecesCount);
@@ -44,18 +44,8 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
     setIsLoading(false);
   }, []);
 
-  useEffect(() => {
-    if (pieces.length && timeCounter !== 0) {
-      const timeCounter = setInterval(
-        () => setTimeCounter(timeCounter + 1),
-        1000
-      );
-      return () => clearInterval(timeCounter);
-    }
-  }, [timeCounter]);
-
   const reset = () => {
-    setTimeCounter(0);
+    setIsTimerActive(false);
     setIsLoading(true);
 
     let updatedPieces = pieces.map(piece => {
@@ -127,7 +117,7 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
       parseInt(style.getPropertyValue('top'), 10) - clientY
     );
 
-    timeCounter === 0 && setTimeCounter(1);
+    isTimerActive === false && setIsTimerActive(true);
   };
 
   const onDragOver = event => {
@@ -236,19 +226,12 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
           <div className={style.pieces}>
             {pieces.map(piece => {
               return (
-                <div
+                <Piece
                   key={piece.index}
-                  draggable
-                  onDragStart={event => onDragStart(event, piece.index)}
-                  style={{
-                    backgroundImage: `url(${imageUrl})`,
-                    backgroundPosition: `${piece.backgroundPosition}`,
-                    top: piece.top,
-                    left: piece.left
-                  }}
-                >
-                  {piece.index}
-                </div>
+                  piece={piece}
+                  onDragStart={onDragStart}
+                  imageUrl={imageUrl}
+                />
               );
             })}
           </div>
@@ -256,8 +239,8 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
       </div>
 
       <GameControls
-        time={formatTime(timeCounter)}
-        pieces={pieces}
+        isTimerActive={isTimerActive}
+        solved={pieces.length > 1 ? false : true}
         reset={reset}
         setStartGame={setStartGame}
       />

@@ -15,7 +15,11 @@ const GameControls = ({ isTimerActive, solved, reset, setStartGame }) => {
 
   return (
     <div className={style.controls}>
-      <div>{formatTime(seconds)}</div>
+      {solved ? (
+        <div>Congratulations! Puzzle solved in {formatTime(seconds)}</div>
+      ) : (
+        <div>{formatTime(seconds)}</div>
+      )}
 
       <Button
         type='secondary'

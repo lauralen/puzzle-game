@@ -30,6 +30,7 @@ const Header = ({
         name='piecesCount'
         onChange={event => setPiecesCount(Number(event.target.value))}
       >
+        <option value='4'>4 pieces</option>
         <option value='16'>16 pieces</option>
         <option value='36'>36 pieces</option>
         <option value='64'>64 pieces</option>

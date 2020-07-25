@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import unsplashId from 'utils/unsplashId';
 import style from './GameBoard.module.scss';
-import { formatTime } from 'utils/functions';
+import unsplashId from 'utils/unsplashId';
 
+import Piece from 'components/Piece';
 import Loader from 'components/Loader';
 import GameControls from 'layout/GameControls';
 
@@ -13,11 +13,11 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
   const [imageUrl, setImageUrl] = useState(null);
   const [pieces, setPieces] = useState([]);
   const [shuffled, setShuffled] = useState([]);
-  const [time, setTime] = useState(0);
+  const [isTimerActive, setIsTimerActive] = useState(false);
 
   const pieceSize = 100;
-  const piecesPerSide = Math.sqrt(piecesCount);
-  const sideLength = piecesPerSide * pieceSize;
+  const piecesPerPuzzleSide = Math.sqrt(piecesCount);
+  const puzzleSideLength = piecesPerPuzzleSide * pieceSize;
 
   const unsplashUrl = 'https://api.unsplash.com/';
 
@@ -26,7 +26,8 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
 
     selectedImage
       ? setImageUrl(
-          selectedImage.urls.raw + `&h=${sideLength}&w=${sideLength}&fit=clamp`
+          selectedImage.urls.raw +
+            `&h=${puzzleSideLength}&w=${puzzleSideLength}&fit=clamp`
         )
       : fetchRandomImage();
 
@@ -38,7 +39,7 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
   }, []);
 
   const reset = () => {
-    setTime(0);
+    setIsTimerActive(false);
     setIsLoading(true);
 
     let updatedPieces = pieces.map(piece => {
@@ -50,19 +51,12 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
     setIsLoading(false);
   };
 
-  useEffect(() => {
-    if (shuffled.length && time !== 0) {
-      const timer = setInterval(() => setTime(time + 1), 1000);
-      return () => clearInterval(timer);
-    }
-  }, [time]);
-
   const fetchRandomImage = async () => {
     try {
       const res = await axios.get(`${unsplashUrl}photos/random`, {
         params: {
-          h: sideLength,
-          w: sideLength,
+          h: puzzleSideLength,
+          w: puzzleSideLength,
           fit: 'clamp'
         },
         headers: {
@@ -82,7 +76,7 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
 
     return pieces.map((piece, index) => {
       return (piece = {
-        position: index,
+        index,
         solved: false,
         backgroundPosition: getBackgroundPosition(index)
       });
@@ -100,11 +94,13 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
   };
 
   const getColumn = index => {
-    return index < piecesPerSide ? index : getColumn(index - piecesPerSide);
+    return index < piecesPerPuzzleSide
+      ? index
+      : getColumn(index - piecesPerPuzzleSide);
   };
 
   const getRow = (index, column) => {
-    return (index - column) / piecesPerSide;
+    return (index - column) / piecesPerPuzzleSide;
   };
 
   const getShuffledPieces = pieces => {
@@ -118,9 +114,9 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
     return shuffled;
   };
 
-  const onDragStart = (event, piece) => {
-    event.dataTransfer.setData('piece', piece);
-    time === 0 && setTime(1);
+  const onDragStart = (event, index) => {
+    event.dataTransfer.setData('index', index);
+    isTimerActive === false && setIsTimerActive(true);
   };
 
   const onDragOver = event => {
@@ -128,18 +124,20 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
   };
 
   const onDrop = (event, target) => {
-    let piece = Number(event.dataTransfer.getData('piece'));
+    const index = Number(event.dataTransfer.getData('index'));
 
-    if (piece === target) {
+    if (index === target) {
       let updatedPieces = pieces.map(piece => {
-        if (piece.position === target) {
+        if (piece.index === target) {
           return { ...piece, solved: true };
         } else return piece;
       });
 
       setPieces(updatedPieces);
-      setShuffled(shuffled.filter(piece => piece.position !== target));
-    } else return;
+      const shuffledPieces = shuffled.filter(piece => piece.index !== target);
+      setShuffled(shuffledPieces);
+      !shuffledPieces.length && setIsTimerActive(false);
+    }
   };
 
   return (
@@ -154,15 +152,15 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
             <div
               className={style.puzzle}
               style={{
-                width: `${piecesPerSide * pieceSize}px`,
-                height: `${piecesPerSide * pieceSize}px`,
+                width: `${piecesPerPuzzleSide * pieceSize}px`,
+                height: `${piecesPerPuzzleSide * pieceSize}px`,
                 backgroundImage: `url(${imageUrl})`
               }}
             >
               {pieces.map(piece => {
                 return (
                   <div
-                    key={piece.position}
+                    key={piece.index}
                     className={
                       shuffled.length
                         ? piece.solved
@@ -172,10 +170,10 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
                     }
                     onDragOver={event => onDragOver(event)}
                     onDrop={event => {
-                      onDrop(event, piece.position);
+                      onDrop(event, piece.index);
                     }}
                   >
-                    {piece.position}
+                    {piece.index}
                   </div>
                 );
               })}
@@ -184,17 +182,12 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
             <div className={style.pieces}>
               {shuffled.map(piece => {
                 return (
-                  <div
-                    key={piece.position}
-                    draggable
-                    onDragStart={event => onDragStart(event, piece.position)}
-                    style={{
-                      backgroundImage: `url(${imageUrl})`,
-                      backgroundPosition: `${piece.backgroundPosition}`
-                    }}
-                  >
-                    {piece.position}
-                  </div>
+                  <Piece
+                    key={piece.index}
+                    piece={piece}
+                    onDragStart={onDragStart}
+                    imageUrl={imageUrl}
+                  />
                 );
               })}
             </div>
@@ -203,8 +196,8 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
       </div>
 
       <GameControls
-        time={formatTime(time)}
-        pieces={pieces}
+        isTimerActive={isTimerActive}
+        solved={!shuffled.length}
         reset={reset}
         setStartGame={setStartGame}
       />

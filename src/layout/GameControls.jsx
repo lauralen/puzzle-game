@@ -17,17 +17,16 @@ const GameControls = ({ isTimerActive, solved, reset, setStartGame }) => {
     <div className={style.controls}>
       <div>{formatTime(seconds)}</div>
 
-      {solved && (
-        <Button
-          type='secondary'
-          title='Play again'
-          action={() => {
-            reset();
-          }}
-        />
-      )}
       <Button
-        type={!solved ? 'secondary' : 'primary'}
+        type='secondary'
+        title='Restart'
+        action={() => {
+          setSeconds(0);
+          reset();
+        }}
+      />
+      <Button
+        type={solved ? 'primary' : 'secondary'}
         title='Go back to gallery'
         action={() => {
           setStartGame(false);

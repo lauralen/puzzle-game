@@ -1,0 +1,82 @@
+@import '~styles/variables';
+
+.confetti {
+  position: absolute;
+  width: 100%;
+
+  div {
+    width: 15px;
+    height: 15px;
+    background-color: $color-main;
+    position: relative;
+    left: 50%;
+    animation: confetti 5s ease-in-out -2s infinite;
+    transform-origin: left top;
+
+    &:nth-child(1) {
+      left: 10%;
+      animation-delay: 0;
+    }
+
+    &:nth-child(2) {
+      left: 20%;
+      animation-delay: -5s;
+    }
+
+    &:nth-child(3) {
+      left: 30%;
+      animation-delay: -3s;
+    }
+
+    &:nth-child(4) {
+      left: 40%;
+      animation-delay: -2.5s;
+    }
+
+    &:nth-child(5) {
+      left: 50%;
+      animation-delay: -4s;
+    }
+    &:nth-child(6) {
+      left: 60%;
+      animation-delay: -6s;
+    }
+
+    &:nth-child(7) {
+      left: 70%;
+      animation-delay: -1.5s;
+    }
+
+    &:nth-child(8) {
+      left: 80%;
+      animation-delay: -2s;
+    }
+
+    &:nth-child(9) {
+      left: 90%;
+      animation-delay: -3.5s;
+    }
+  }
+}
+
+@keyframes confetti {
+  0% {
+    transform: rotateZ(15deg) rotateY(0deg) translate(0, 0);
+  }
+
+  25% {
+    transform: rotateZ(5deg) rotateY(360deg) translate(-5vw, 20vh);
+  }
+
+  50% {
+    transform: rotateZ(15deg) rotateY(720deg) translate(5vw, 40vh);
+  }
+
+  75% {
+    transform: rotateZ(5deg) rotateY(1080deg) translate(-5vw, 60vh);
+  }
+
+  100% {
+    transform: rotateZ(15deg) rotateY(1440deg) translate(5vw, 80vh);
+  }
+}

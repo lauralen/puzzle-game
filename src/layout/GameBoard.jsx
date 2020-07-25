@@ -5,6 +5,7 @@ import unsplashId from 'utils/unsplashId';
 
 import Piece from 'components/Piece';
 import Loader from 'components/Loader';
+import Confetti from 'components/Confetti';
 import GameControls from 'layout/GameControls';
 
 const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
@@ -178,6 +179,7 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
                 );
               })}
             </div>
+            {!shuffled.length && <Confetti />}
 
             <div className={style.pieces}>
               {shuffled.map(piece => {

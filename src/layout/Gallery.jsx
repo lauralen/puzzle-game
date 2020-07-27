@@ -19,16 +19,14 @@ const Gallery = ({ keyword, selectedImage, setSelectedImage }) => {
     setImages([]);
     setIsLoading(true);
 
-    setPage(1);
-    keyword === '' ? fetchImages() : fetchImagesByKeyword(keyword);
+    const timer = setTimeout(() => {
+      keyword === '' ? fetchImages(1) : fetchImagesByKeyword(keyword, 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
   }, [keyword]);
 
-  useEffect(() => {
-    setError();
-    keyword === '' ? fetchImages() : fetchImagesByKeyword(keyword);
-  }, [page]);
-
-  const fetchImages = async () => {
+  const fetchImages = async page => {
     try {
       setIsLoading(true);
 
@@ -39,7 +37,15 @@ const Gallery = ({ keyword, selectedImage, setSelectedImage }) => {
         }
       });
 
-      setImages(images.concat(res.data));
+      let results = res.data;
+
+      if (page === 1) {
+        setImages(results);
+      } else {
+        setImages(images.concat(results));
+      }
+
+      setPage(page);
       setIsLoading(false);
     } catch (err) {
       setError('Oops! Something went wrong');
@@ -48,7 +54,7 @@ const Gallery = ({ keyword, selectedImage, setSelectedImage }) => {
     }
   };
 
-  const fetchImagesByKeyword = async () => {
+  const fetchImagesByKeyword = async (keyword, page) => {
     try {
       setIsLoading(true);
 
@@ -59,7 +65,15 @@ const Gallery = ({ keyword, selectedImage, setSelectedImage }) => {
         }
       });
 
-      setImages(images.concat(res.data.results));
+      const { results } = res.data;
+
+      if (page === 1) {
+        setImages(results);
+      } else {
+        setImages(images.concat(results));
+      }
+
+      setPage(page);
       setIsLoading(false);
     } catch (err) {
       setError('Oops! Something went wrong');
@@ -81,7 +95,7 @@ const Gallery = ({ keyword, selectedImage, setSelectedImage }) => {
                   img === selectedImage ? style.selected : null
                 ].join(' ')}
                 style={{
-                  backgroundImage: `url(${img.urls.regular})`
+                  backgroundImage: `url(${img.urls.small})`
                 }}
                 onClick={() => {
                   setSelectedImage(
@@ -116,7 +130,9 @@ const Gallery = ({ keyword, selectedImage, setSelectedImage }) => {
       {!isLoading && page <= 5 && (
         <Button
           action={() => {
-            setPage(page + 1);
+            keyword === ''
+              ? fetchImages(page + 1)
+              : fetchImagesByKeyword(keyword, page + 1);
           }}
           title='Load more'
           type='primary'

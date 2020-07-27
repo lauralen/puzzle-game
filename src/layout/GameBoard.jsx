@@ -28,7 +28,7 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
     selectedImage
       ? setImageUrl(
           selectedImage.urls.raw +
-            `&h=${puzzleSideLength}&w=${puzzleSideLength}&fit=clamp`
+            `&h=${puzzleSideLength}&w=${puzzleSideLength}&fit=crop`
         )
       : fetchRandomImage();
 
@@ -58,7 +58,7 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
         params: {
           h: puzzleSideLength,
           w: puzzleSideLength,
-          fit: 'clamp'
+          fit: 'crop'
         },
         headers: {
           Authorization: `Client-ID ${unsplashId}`

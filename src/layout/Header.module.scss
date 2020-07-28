@@ -13,11 +13,35 @@ header {
   overflow: hidden;
   z-index: 2;
 
-  input:first-of-type {
+  div:first-child {
     margin-right: auto;
   }
 
-  button {
+  > *:not(:first-child) {
     margin-left: $spacing-md;
+  }
+
+  @media screen and (max-width: $breakpoint-tablet) {
+    button {
+      position: fixed;
+      bottom: $spacing-xs;
+      right: $spacing-xs;
+      z-index: 1;
+    }
+  }
+
+  @media screen and (max-width: $breakpoint-phone) {
+    position: static;
+    height: auto;
+    flex-direction: column;
+
+    & > * {
+      margin-left: 0 !important;
+
+      &:not(button) {
+        width: 100%;
+        margin-bottom: $spacing-sm;
+      }
+    }
   }
 }

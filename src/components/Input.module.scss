@@ -1,9 +1,18 @@
 @import '~styles/mixins';
+@import '~styles/variables';
 
-label {
-  @include inputLabel;
-}
+.input {
+  @include inputWrapper;
 
-input {
-  @include input;
+  label {
+    display: none;
+  }
+
+  input {
+    @include input;
+
+    @media screen and (max-width: $breakpoint-tablet) {
+      width: 100%;
+    }
+  }
 }

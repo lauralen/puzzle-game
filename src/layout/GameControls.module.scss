@@ -11,6 +11,10 @@
   padding: $spacing-sm $spacing-md;
   background-color: $color-black;
 
+  @media screen and (max-width: $breakpoint-tablet) {
+    padding: $spacing-sm;
+  }
+
   div {
     margin-right: auto;
     color: $color-white;

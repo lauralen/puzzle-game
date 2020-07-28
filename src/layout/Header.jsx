@@ -25,7 +25,7 @@ const Header = ({
       />
 
       <Select
-        label='Puzzle size:'
+        label='Size:'
         value={piecesCount}
         name='piecesCount'
         onChange={event => setPiecesCount(Number(event.target.value))}
@@ -39,7 +39,7 @@ const Header = ({
         name='useRandomImage'
         type='checkbox'
         checked={useRandomImage}
-        label='Use random image'
+        label='Random image'
         onChange={event => setUseRandomImage(event.target.checked)}
       />
       <Button

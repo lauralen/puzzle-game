@@ -3,8 +3,8 @@ import style from './Input.module.scss';
 
 const Input = ({ value, name, label, type, onChange, placeholder }) => {
   return (
-    <>
-      <label className={style.label}>{label}</label>
+    <div className={style.input}>
+      <label>{label}</label>
       <input
         value={value}
         name={name}
@@ -12,7 +12,7 @@ const Input = ({ value, name, label, type, onChange, placeholder }) => {
         onChange={onChange}
         placeholder={placeholder}
       />
-    </>
+    </div>
   );
 };
 

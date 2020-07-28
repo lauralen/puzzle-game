@@ -2,6 +2,7 @@
 
 button {
   height: 40px;
+  min-width: fit-content;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -13,7 +14,7 @@ button {
   cursor: pointer;
 
   & + button {
-    margin-left: $spacing-md;
+    margin-left: $spacing-sm;
   }
 
   &:hover {

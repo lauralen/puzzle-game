@@ -9,6 +9,10 @@
   padding-top: $header-height + $spacing-md;
   background-color: $color-lightgrey;
 
+  @media screen and (max-width: $breakpoint-phone) {
+    padding-top: $spacing-md;
+  }
+
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, 300px);

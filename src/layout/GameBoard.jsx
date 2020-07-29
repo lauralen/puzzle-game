@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import deviceDetect from 'hooks/deviceDetect';
+
 import axios from 'axios';
 import style from './GameBoard.module.scss';
 import unsplashId from 'utils/unsplashId';
@@ -20,6 +22,7 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
   const piecesPerPuzzleSide = Math.sqrt(piecesCount);
   const puzzleSideLength = piecesPerPuzzleSide * pieceSize;
 
+  const { isMobile } = deviceDetect();
   const unsplashUrl = 'https://api.unsplash.com/';
 
   useEffect(() => {
@@ -144,6 +147,9 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
   return (
     <>
       <div className={style.gameBoard}>
+        {isMobile && (
+          <p>Unfortunately, the game does not support touch screens yet.</p>
+        )}
         {isLoading || !imageUrl ? (
           <Loader />
         ) : error ? (

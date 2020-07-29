@@ -7,8 +7,12 @@
   align-items: center;
   height: 100vh;
   overflow: hidden;
-  padding-top: $spacing-lg;
+  padding: $spacing-md $spacing-xs 0;
   background-color: $color-darkgrey;
+
+  @media screen and (max-width: $breakpoint-tablet) {
+    padding-top: $spacing-sm;
+  }
 
   img {
     max-height: 70%;
@@ -56,5 +60,11 @@
       margin: 0 $spacing-sm $spacing-sm 0;
       cursor: grab;
     }
+  }
+
+  p {
+    padding-bottom: $spacing-sm;
+    font-size: $font-size-h2;
+    color: $color-white;
   }
 }

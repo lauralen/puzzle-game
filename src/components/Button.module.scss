@@ -11,6 +11,7 @@ button {
   border-radius: $border-radius;
   font-size: $font-size-base;
   transition: $transition;
+  color: $color-black;
   cursor: pointer;
 
   & + button {
@@ -24,17 +25,15 @@ button {
   }
 
   &:disabled {
-    background-color: $color-darkgrey;
+    background-color: $color-mediumgrey;
     cursor: not-allowed;
   }
 }
 
 .primary {
   background-color: $color-main;
-  color: $color-white;
 }
 
 .secondary {
   background-color: $color-white;
-  color: $color-black;
 }

@@ -31,7 +31,7 @@ const Gallery = ({ keyword, selectedImage, setSelectedImage }) => {
       setIsLoading(true);
 
       const res = await axios.get(`${unsplashUrl}photos`, {
-        params: { page: page, per_page: 20 },
+        params: { page: page, per_page: 10 },
         headers: {
           Authorization: `Client-ID ${unsplashId}`
         }
@@ -59,7 +59,7 @@ const Gallery = ({ keyword, selectedImage, setSelectedImage }) => {
       setIsLoading(true);
 
       const res = await axios.get(`${unsplashUrl}search/photos`, {
-        params: { query: keyword, page: page, per_page: 20 },
+        params: { query: keyword, page: page, per_page: 10 },
         headers: {
           Authorization: `Client-ID ${unsplashId}`
         }

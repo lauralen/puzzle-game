@@ -39,3 +39,7 @@ Start development server
 ```
 npm start
 ```
+
+## Demo
+
+The project is live at [puzzle-game-unsplash.herokuapp.com](https://puzzle-game-unsplash.herokuapp.com/)

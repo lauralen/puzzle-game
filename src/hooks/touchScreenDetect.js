@@ -1,19 +1,19 @@
 import { useState, useEffect } from 'react';
 
-export default function useDeviceDetect() {
-  const [isMobile, setMobile] = useState(false);
+export default function useTouchScreenDetect() {
+  const [isTouchScreen, setIsTouchScreen] = useState(false);
 
   useEffect(() => {
     const userAgent =
       typeof window.navigator === 'undefined' ? '' : navigator.userAgent;
 
-    const isMobile = Boolean(
+    const isTouchScreen = Boolean(
       userAgent.match(
         /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
       )
     );
-    setMobile(isMobile);
+    setIsTouchScreen(isTouchScreen);
   }, []);
 
-  return { isMobile };
+  return { isTouchScreen };
 }

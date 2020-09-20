@@ -174,14 +174,11 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
                     onDrop={event => {
                       onDrop(event, piece.index);
                     }}
-                  >
-                    {piece.index}
-                  </div>
+                  />
                 );
               })}
             </div>
             {!shuffled.length && <Confetti />}
-
             <div className={style.pieces}>
               {shuffled.map(piece => {
                 return (

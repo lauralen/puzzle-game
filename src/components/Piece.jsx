@@ -9,9 +9,7 @@ const Piece = ({ piece, onDragStart, imageUrl }) => {
         backgroundImage: `url(${imageUrl})`,
         backgroundPosition: piece.backgroundPosition
       }}
-    >
-      {piece.index}
-    </div>
+    />
   );
 };
 

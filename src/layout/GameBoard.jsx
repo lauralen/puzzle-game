@@ -16,6 +16,7 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
   const [pieces, setPieces] = useState([]);
   const [shuffled, setShuffled] = useState([]);
   const [isTimerActive, setIsTimerActive] = useState(false);
+  const [draggedPiece, setDraggedPiece] = useState(null);
 
   const pieceSize = 100;
   const piecesPerPuzzleSide = Math.sqrt(piecesCount);
@@ -117,29 +118,57 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
   };
 
   const onDragStart = (event, index) => {
-    event.dataTransfer.setData('index', index);
+    const { touches } = event;
+
+    const { clientX, clientY } = touches ? touches[0] : event;
+
+    setDraggedPiece({
+      index: index,
+      initialPosition: { x: clientX, y: clientY }
+    });
+
     isTimerActive === false && setIsTimerActive(true);
   };
 
-  const onDragOver = event => {
-    event.preventDefault();
+  const onDrag = event => {
+    if (!draggedPiece) return;
+
+    const { clientX, clientY } = event.touches ? event.touches[0] : event;
+
+    const dropPoint = document.elementsFromPoint(clientX, clientY);
+    const target = dropPoint.find(el => el.id === 'dropzone');
+
+    let targetIndex;
+
+    if (target) {
+      let index = target.getAttribute('index');
+      targetIndex = Number(index);
+    }
+
+    let x = clientX - draggedPiece.initialPosition.x;
+    let y = clientY - draggedPiece.initialPosition.y;
+
+    setDraggedPiece({ ...draggedPiece, position: { x, y }, targetIndex });
   };
 
-  const onDrop = (event, target) => {
-    const index = Number(event.dataTransfer.getData('index'));
+  const onDrop = () => {
+    const { index, targetIndex } = draggedPiece;
 
-    if (index === target) {
+    if (typeof targetIndex === 'number' && index === targetIndex) {
       let updatedPieces = pieces.map(piece => {
-        if (piece.index === target) {
+        if (piece.index === targetIndex) {
           return { ...piece, solved: true };
         } else return piece;
       });
-
       setPieces(updatedPieces);
-      const shuffledPieces = shuffled.filter(piece => piece.index !== target);
+      const shuffledPieces = shuffled.filter(
+        piece => piece.index !== targetIndex
+      );
       setShuffled(shuffledPieces);
       !shuffledPieces.length && setIsTimerActive(false);
     }
+
+    setDraggedPiece(null);
   };
 
   return (
@@ -160,33 +189,46 @@ const GameBoard = ({ selectedImage, piecesCount, setStartGame }) => {
               }}
             >
               {pieces.map(piece => {
+                const { index, solved } = piece;
+
                 return (
                   <div
-                    key={piece.index}
+                    key={index}
+                    id='dropzone'
+                    index={index}
                     className={
                       shuffled.length
-                        ? piece.solved
+                        ? solved
                           ? style.solved
                           : null
                         : style.completed
                     }
-                    onDragOver={event => onDragOver(event)}
-                    onDrop={event => {
-                      onDrop(event, piece.index);
-                    }}
                   />
                 );
               })}
             </div>
+
             {!shuffled.length && <Confetti />}
+
             <div className={style.pieces}>
               {shuffled.map(piece => {
+                const { index } = piece;
+
                 return (
                   <Piece
-                    key={piece.index}
+                    key={index}
                     piece={piece}
-                    onDragStart={onDragStart}
                     imageUrl={imageUrl}
+                    onDragStart={event => onDragStart(event, index)}
+                    onDrag={event => onDrag(event)}
+                    onDrop={() => {
+                      onDrop();
+                    }}
+                    position={
+                      index === draggedPiece?.index
+                        ? draggedPiece.position
+                        : null
+                    }
                   />
                 );
               })}
